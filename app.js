@@ -1,16 +1,27 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const userRouter = require('./routes/users');
 
-const { PORT = 3000 }= process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // подключаемся к серверу mongo
-mongoose.connect('mongodb://localhost:27017/mestodb.mestodb', {
-  useNewUrlParser: true,
-});
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb', () => console.log('connected'));
 
-// подключаем мидлвары, роуты и всё остальное...
+app.use('/users', userRouter);
 
-app.listen(PORT);
+//временная авторизация
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '5d8b8592978f8bd833ca8133' // вставьте сюда _id созданного в предыдущем пункте пользователя
+//   };
+//
+//   next();
+// });
+
+app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
