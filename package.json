@@ -20,7 +20,7 @@
     "url": "https://github.com/NataliUstinova/express-mesto-gha/issues"
   },
   "homepage": "https://github.com/NataliUstinova/express-mesto-gha#readme",
-  "dependencies": {
+  "devDependencies": {
     "body-parser": "^1.20.1",
     "eslint": "^8.26.0",
     "eslint-config-airbnb-base": "^15.0.0",
