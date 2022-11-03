@@ -16,7 +16,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', () => console.log('connect
 //временная авторизация
 app.use((req, res, next) => {
   req.user = {
-    _id: '6363fc42ac871e993a20a373'
+    _id: '6364012305b1c3eaf904ca3f'
   };
 
   next();
