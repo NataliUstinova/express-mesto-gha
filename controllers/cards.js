@@ -1,6 +1,5 @@
 const Card = require('../models/card');
-const mongoose = require("mongoose");
-const { STATUS, ERROR_MESSAGE } = require("../constants/constants");
+const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require("../constants/constants");
 
 module.exports.getAllCards = (req, res) => {
   Card.find({})
@@ -13,7 +12,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id }).then(
     (card) => res.send(card),
   ).catch((e) => {
-    if (e instanceof mongoose.Error.ValidationError) {
+    if (e.name === ERROR_NAME.VALIDATION) {
       return res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
@@ -24,7 +23,14 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId).then((card) => res.send(card))
-    .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
+    .catch((e) => {
+      if (e.name === ERROR_NAME.CAST) {
+        return res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+      }
+      res.status(STATUS.DEFAULT_ERROR).send({message: ERROR_MESSAGE.DEFAULT_ERROR})
+    });
 };
 
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
@@ -32,7 +38,17 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id  } }, // добавить _id в массив, если его там нет
   { new: true },
 ).then((card) => res.send(card))
-  .catch(() => {
+  .catch((e) => {
+    if (e.name === ERROR_NAME.VALIDATION) {
+      return res
+        .status(STATUS.BAD_REQUEST)
+        .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
+    }
+    if (e.name === ERROR_NAME.CAST) {
+      return res
+        .status(STATUS.NOT_FOUND)
+        .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+    }
     res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR })
   });
 
@@ -41,4 +57,16 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id  } }, // убрать _id из массива
   { new: true },
 ).then((card) => res.send(card))
-  .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
+  .catch((e) => {
+    if (e.name === ERROR_NAME.VALIDATION) {
+      return res
+        .status(STATUS.BAD_REQUEST)
+        .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
+    }
+    if (e.name === ERROR_NAME.CAST) {
+      return res
+        .status(STATUS.NOT_FOUND)
+        .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+    }
+    res.status(STATUS.DEFAULT_ERROR).send({message: ERROR_MESSAGE.DEFAULT_ERROR})
+  });
