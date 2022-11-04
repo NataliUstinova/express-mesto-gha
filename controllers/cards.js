@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
@@ -12,7 +13,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id }).then(
     (card) => res.send(card),
   ).catch((e) => {
-    if (e.name === ERROR_NAME.VALIDATION) {
+    if (e instanceof mongoose.Error.ValidationError) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
@@ -44,7 +45,7 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   { new: true },
 ).then((card) => res.send(card))
   .catch((e) => {
-    if (e.name === ERROR_NAME.VALIDATION) {
+    if (e instanceof mongoose.Error.ValidationError) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
@@ -63,7 +64,7 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { new: true },
 ).then((card) => res.send(card))
   .catch((e) => {
-    if (e.name === ERROR_NAME.VALIDATION) {
+    if (e instanceof mongoose.Error.ValidationError) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });

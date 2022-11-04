@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/user');
 const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
@@ -51,7 +52,7 @@ module.exports.updateUserInfo = (req, res) => {
   )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
-      if (e.name === ERROR_NAME.VALIDATION) {
+      if (e instanceof mongoose.Error.ValidationError) {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
@@ -74,7 +75,7 @@ module.exports.updateAvatar = (req, res) => {
   )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
-      if (e.name === ERROR_NAME.VALIDATION) {
+      if (e instanceof mongoose.Error.ValidationError) {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
