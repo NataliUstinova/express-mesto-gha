@@ -25,12 +25,12 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
       if (card) {
-        res.send(card)
+        res.send(card);
       }
       if (!card) {
-          res
-            .status(STATUS.NOT_FOUND)
-            .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+        res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
       }
     })
     .catch(() => {

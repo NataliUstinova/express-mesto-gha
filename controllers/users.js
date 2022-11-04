@@ -9,9 +9,9 @@ module.exports.getAllUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then(user => {
+    .then((user) => {
       if (user) {
-      res.status(STATUS.OK).send(user)
+        res.status(STATUS.OK).send(user);
       } else if (!user) {
         res
           .status(STATUS.NOT_FOUND)
@@ -44,7 +44,8 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id,
+  User.findByIdAndUpdate(
+    req.user._id,
     { name, about },
     { new: true },
   )
@@ -66,10 +67,11 @@ module.exports.updateUserInfo = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const { link } = req.body;
-  User.findByIdAndUpdate(req.user._id,
+  User.findByIdAndUpdate(
+    req.user._id,
     { link },
     { new: true },
-    )
+  )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
