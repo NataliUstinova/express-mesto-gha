@@ -18,7 +18,12 @@ module.exports.getUserById = (req, res) => {
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
-    .catch(() => {
+    .catch((e) => {
+      if (e.name === ERROR_NAME.VALIDATION) {
+        res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER });
+      }
       res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
@@ -61,7 +66,10 @@ module.exports.updateUserInfo = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const { link } = req.body;
-  User.findByIdAndUpdate({ link })
+  User.findByIdAndUpdate(req.user._id,
+    { link },
+    { new: true },
+    )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {

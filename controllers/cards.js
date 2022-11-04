@@ -22,13 +22,18 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndDelete(req.params.cardId).then((card) => res.send(card))
-    .catch((e) => {
-      if (e.name === ERROR_NAME.CAST) {
-        res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+  Card.findByIdAndDelete(req.params.cardId)
+    .then((card) => {
+      if (card) {
+        res.send(card)
       }
+      if (!card) {
+          res
+            .status(STATUS.NOT_FOUND)
+            .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+      }
+    })
+    .catch(() => {
       res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
