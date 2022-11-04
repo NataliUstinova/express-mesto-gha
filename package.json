@@ -5,10 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint . --fix",
+    "lint": "npx eslint .",
     "start": "nodemon app.js",
     "dev": "nodemon app.js localhost 3000",
-    "prod": "NODE_ENV=production node app.js"
+    "prod": "NODE_ENV=production node app.js localhost 3000"
   },
   "repository": {
     "type": "git",
