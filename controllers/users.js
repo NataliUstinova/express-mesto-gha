@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require("../constants/constants");
+const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
@@ -12,11 +12,11 @@ module.exports.getUserById = (req, res) => {
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.CAST) {
-        return res
+        res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({message: ERROR_MESSAGE.DEFAULT_ERROR})
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
 
@@ -26,11 +26,11 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
-        return res
+        res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({message: ERROR_MESSAGE.DEFAULT_ERROR})
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
 
@@ -40,18 +40,18 @@ module.exports.updateUserInfo = (req, res) => {
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
-        return res
+        res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
       }
       if (e.name === ERROR_NAME.CAST) {
-        return res
+        res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({message: ERROR_MESSAGE.DEFAULT_ERROR})
-  });
-}
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+    });
+};
 
 module.exports.updateAvatar = (req, res) => {
   const { link } = req.body;
@@ -59,16 +59,15 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
-        return res
+        res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
       }
       if (e.name === ERROR_NAME.CAST) {
-        return res
+        res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({message: ERROR_MESSAGE.DEFAULT_ERROR})
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
-}
-
+};
