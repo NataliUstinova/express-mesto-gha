@@ -39,7 +39,10 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate({ name, about })
+  User.findByIdAndUpdate(req.user._id,
+    { name, about },
+    { new: true },
+  )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
