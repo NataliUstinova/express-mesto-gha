@@ -9,13 +9,16 @@ module.exports.getAllUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.status(STATUS.OK).send(user))
-    .catch((e) => {
-      if (e.name === ERROR_NAME.CAST) {
+    .then(user => {
+      if (user) {
+      res.status(STATUS.OK).send(user)
+      } else if (!user) {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
+    })
+    .catch(() => {
       res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
