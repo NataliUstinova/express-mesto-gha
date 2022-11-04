@@ -52,12 +52,12 @@ module.exports.updateUserInfo = (req, res) => {
   )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
-      if (e instanceof mongoose.Error.ValidationError) {
+      if (e instanceof mongoose.Error.ValidationError || e.name === ERROR_NAME.VALIDATION) {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
       }
-      if (e.name === ERROR_NAME.CAST) {
+      else if (e.name === ERROR_NAME.CAST) {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
