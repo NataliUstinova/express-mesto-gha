@@ -1,10 +1,11 @@
 const Card = require('../models/card');
 const mongoose = require("mongoose");
+const { STATUS, ERROR_MESSAGE } = require("../constants/constants");
 
 module.exports.getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -13,22 +14,17 @@ module.exports.createCard = (req, res) => {
     (card) => res.send(card),
   ).catch((e) => {
     if (e instanceof mongoose.Error.ValidationError) {
-
       return res
-
-        .status(400)
-
-        .send({ message: "ERRORS.badRequest.errorMessage" });
-
+        .status(STATUS.BAD_REQUEST)
+        .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     }
-    console.log(e)
-    res.status(500).send({ message: 'Произошла ошибка добавления карточки' })
+    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR })
   });
 };
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId).then((card) => res.send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка удаления карточки' }));
+    .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
 };
 
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
@@ -37,7 +33,7 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   { new: true },
 ).then((card) => res.send(card))
   .catch(() => {
-    res.status(500).send({message: 'Произошла ошибка лайка карточки'})
+    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR })
   });
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
@@ -45,4 +41,4 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id  } }, // убрать _id из массива
   { new: true },
 ).then((card) => res.send(card))
-  .catch(() => res.status(500).send({ message: 'Произошла ошибка дизлайка карточки' }));
+  .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
