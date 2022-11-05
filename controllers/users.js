@@ -8,7 +8,7 @@ module.exports.getAllUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.userId)
+  User.findById(req.params.userId, { runValidators: true })
     .then((user) => {
       if (user) {
         res.status(STATUS.OK).send(user);
@@ -19,10 +19,10 @@ module.exports.getUserById = (req, res) => {
       }
     })
     .catch((e) => {
-      if (e.name === ERROR_NAME.VALIDATION) {
+      if (e.name === ERROR_NAME.CAST) {
         res
           .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER });
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
       }
       res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
@@ -68,10 +68,10 @@ module.exports.updateUserInfo = (req, res) => {
 };
 
 module.exports.updateAvatar = (req, res) => {
-  const { link } = req.body;
+  const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { link },
+    { avatar },
     { new: true },
   )
     .then((user) => res.status(STATUS.OK).send(user))
