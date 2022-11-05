@@ -33,7 +33,12 @@ module.exports.deleteCard = (req, res) => {
           .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
       }
     })
-    .catch(() => {
+    .catch((e) => {
+      if (e.name === ERROR_NAME.CAST) {
+        res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+      }
       res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
@@ -45,17 +50,21 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
     new: true,
     runValidators: true,
   },
-).then((card) => res.send(card))
+).then((card) => {
+  if (card) {
+    res.send(card);
+  }
+  if (!card) {
+    res
+      .status(STATUS.NOT_FOUND)
+      .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+  }
+})
   .catch((e) => {
-    if (e.name === ERROR_NAME.VALIDATION) {
-      res
-        .status(STATUS.BAD_REQUEST)
-        .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
-    }
     if (e.name === ERROR_NAME.CAST) {
       res
-        .status(STATUS.NOT_FOUND)
-        .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+        .status(STATUS.BAD_REQUEST)
+        .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     }
     res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
   });
@@ -67,7 +76,15 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
     new: true,
     runValidators: true,
   },
-).then((card) => res.send(card))
+).then((card) => {
+  if (card) {
+    res.status(STATUS.OK).send(card);
+  } else if (!card) {
+    res
+      .status(STATUS.BAD_REQUEST)
+      .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
+  }
+})
   .catch((e) => {
     if (e.name === ERROR_NAME.VALIDATION) {
       res
