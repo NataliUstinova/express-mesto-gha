@@ -29,15 +29,15 @@ module.exports.deleteCard = (req, res) => {
       }
       if (!card) {
         res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
       }
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.CAST) {
         res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+          .status(STATUS.NOT_FOUND)
+          .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
       }
       res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
