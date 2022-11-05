@@ -8,7 +8,7 @@ module.exports.getAllUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.userId, { runValidators: true })
+  User.findById(req.params.userId)
     .then((user) => {
       if (user) {
         res.status(STATUS.OK).send(user);
