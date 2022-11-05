@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Card = require('../models/card');
 const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
@@ -13,7 +12,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id }).then(
     (card) => res.send(card),
   ).catch((e) => {
-    if (e instanceof mongoose.Error.ValidationError) {
+    if (e.name === ERROR_NAME.VALIDATION) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
@@ -42,10 +41,13 @@ module.exports.deleteCard = (req, res) => {
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-  { new: true },
+  {
+    new: true,
+    runValidators: true,
+  },
 ).then((card) => res.send(card))
   .catch((e) => {
-    if (e instanceof mongoose.Error.ValidationError) {
+    if (e.name === ERROR_NAME.VALIDATION) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
@@ -61,10 +63,13 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } }, // убрать _id из массива
-  { new: true },
+  {
+    new: true,
+    runValidators: true,
+  },
 ).then((card) => res.send(card))
   .catch((e) => {
-    if (e instanceof mongoose.Error.ValidationError) {
+    if (e.name === ERROR_NAME.VALIDATION) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });

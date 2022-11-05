@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const User = require('../models/user');
 const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
@@ -48,16 +47,18 @@ module.exports.updateUserInfo = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
-      if (e instanceof mongoose.Error.ValidationError || e.name === ERROR_NAME.VALIDATION) {
+      if (e.name === ERROR_NAME.VALIDATION) {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
-      }
-      else if (e.name === ERROR_NAME.CAST) {
+      } else if (e.name === ERROR_NAME.CAST) {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
@@ -75,7 +76,7 @@ module.exports.updateAvatar = (req, res) => {
   )
     .then((user) => res.status(STATUS.OK).send(user))
     .catch((e) => {
-      if (e instanceof mongoose.Error.ValidationError) {
+      if (e.name === ERROR_NAME.VALIDATION) {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
