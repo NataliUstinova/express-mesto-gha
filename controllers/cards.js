@@ -89,11 +89,7 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   }
 })
   .catch((e) => {
-    if (e.name === ERROR_NAME.VALIDATION) {
-      res
-        .status(STATUS.BAD_REQUEST)
-        .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
-    } else if (e.name === ERROR_NAME.CAST) {
+    if (e.name === ERROR_NAME.CAST) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
