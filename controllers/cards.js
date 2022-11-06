@@ -27,8 +27,7 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (card) {
         res.send(card);
-      }
-      if (!card) {
+      } else {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
@@ -55,8 +54,7 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
 ).then((card) => {
   if (card) {
     res.send(card);
-  }
-  if (!card) {
+  } else {
     res
       .status(STATUS.NOT_FOUND)
       .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
@@ -82,7 +80,7 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
 ).then((card) => {
   if (card) {
     res.send(card);
-  } else if (!card) {
+  } else {
     res
       .status(STATUS.NOT_FOUND)
       .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD_LIKES });

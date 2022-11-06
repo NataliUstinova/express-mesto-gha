@@ -12,7 +12,7 @@ module.exports.getUserById = (req, res) => {
     .then((user) => {
       if (user) {
         res.send(user);
-      } else if (!user) {
+      } else {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
