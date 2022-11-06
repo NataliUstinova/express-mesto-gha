@@ -78,7 +78,7 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   },
 ).then((card) => {
   if (card) {
-    res.status(STATUS.OK).send(card);
+    res.send(card);
   } else if (!card) {
     res
       .status(STATUS.NOT_FOUND)

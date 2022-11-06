@@ -11,7 +11,7 @@ module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
-        res.status(STATUS.OK).send(user);
+        res.send(user);
       } else if (!user) {
         res
           .status(STATUS.NOT_FOUND)
@@ -31,7 +31,7 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(STATUS.OK).send(user))
+    .then((user) => res.send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
         res
@@ -52,7 +52,7 @@ module.exports.updateUserInfo = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.status(STATUS.OK).send(user))
+    .then((user) => res.send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
         res
@@ -74,7 +74,7 @@ module.exports.updateAvatar = (req, res) => {
     { avatar },
     { new: true },
   )
-    .then((user) => res.status(STATUS.OK).send(user))
+    .then((user) => res.send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
         res
