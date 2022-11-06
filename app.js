@@ -1,5 +1,6 @@
 const express = require('express');
 const rateLimit = require ('express-rate-limit');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRouter = require('./routes/users');
@@ -19,6 +20,8 @@ const limiter = rateLimit({
 
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
+app.use(helmet());
+app.disable('x-powered-by');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
