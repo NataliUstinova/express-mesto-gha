@@ -16,8 +16,9 @@ module.exports.createCard = (req, res) => {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+    } else {
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     }
-    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
   });
 };
 
@@ -38,8 +39,9 @@ module.exports.deleteCard = (req, res) => {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
 
@@ -65,8 +67,9 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+    } else {
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     }
-    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
   });
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
@@ -90,11 +93,11 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
-    }
-    if (e.name === ERROR_NAME.CAST) {
+    } else if (e.name === ERROR_NAME.CAST) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+    } else {
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     }
-    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
   });

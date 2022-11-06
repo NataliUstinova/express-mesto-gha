@@ -23,8 +23,9 @@ module.exports.getUserById = (req, res) => {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
 
@@ -37,8 +38,9 @@ module.exports.createUser = (req, res) => {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
 
@@ -62,8 +64,9 @@ module.exports.updateUserInfo = (req, res) => {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
 
@@ -80,12 +83,12 @@ module.exports.updateAvatar = (req, res) => {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
-      }
-      if (e.name === ERROR_NAME.CAST) {
+      } else if (e.name === ERROR_NAME.CAST) {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
