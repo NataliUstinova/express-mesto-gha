@@ -16,8 +16,9 @@ module.exports.createCard = (req, res) => {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+    } else {
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     }
-    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
   });
 };
 
@@ -26,8 +27,7 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (card) {
         res.send(card);
-      }
-      if (!card) {
+      } else {
         res
           .status(STATUS.NOT_FOUND)
           .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
@@ -38,8 +38,9 @@ module.exports.deleteCard = (req, res) => {
         res
           .status(STATUS.BAD_REQUEST)
           .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
-      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     });
 };
 
@@ -53,8 +54,7 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
 ).then((card) => {
   if (card) {
     res.send(card);
-  }
-  if (!card) {
+  } else {
     res
       .status(STATUS.NOT_FOUND)
       .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
@@ -65,8 +65,9 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+    } else {
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     }
-    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
   });
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
@@ -78,23 +79,19 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   },
 ).then((card) => {
   if (card) {
-    res.status(STATUS.OK).send(card);
-  } else if (!card) {
+    res.send(card);
+  } else {
     res
       .status(STATUS.NOT_FOUND)
       .send({ message: ERROR_MESSAGE.NOT_FOUND.CARD_LIKES });
   }
 })
   .catch((e) => {
-    if (e.name === ERROR_NAME.VALIDATION) {
-      res
-        .status(STATUS.BAD_REQUEST)
-        .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD_LIKES });
-    }
     if (e.name === ERROR_NAME.CAST) {
       res
         .status(STATUS.BAD_REQUEST)
         .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+    } else {
+      res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
     }
-    res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
   });
