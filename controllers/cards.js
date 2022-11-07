@@ -27,6 +27,10 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (card) {
         res.send(card);
+      } else if (card.owner !== req.user._id) {
+        res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
       } else {
         res
           .status(STATUS.NOT_FOUND)

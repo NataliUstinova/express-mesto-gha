@@ -1,11 +1,14 @@
 const express = require('express');
+require('dotenv').config()
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const auth = require('./middlewares/auth');
 const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
+const {login, createUser} = require("./controllers/users");
 
 const { PORT = 3000 } = process.env;
 
@@ -28,18 +31,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
-// временная авторизация
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6364012305b1c3eaf904ca3f',
-  };
 
-  next();
-});
+// роуты, не требующие авторизации, регистрация и логин
+app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
+app.post('/signup', createUser);
+app.post('/signin', login);
 
+// авторизация
+app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
-app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
 
 app.listen(PORT);
