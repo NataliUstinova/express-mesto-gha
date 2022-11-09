@@ -35,7 +35,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 // роуты, не требующие авторизации, регистрация и логин
-app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
 app.post('/signup', createUser);
 app.post('/signin', login);
 
@@ -43,5 +42,7 @@ app.post('/signin', login);
 app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
+app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
+
 
 app.listen(PORT);
