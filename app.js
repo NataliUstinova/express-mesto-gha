@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const auth = require('./middlewares/auth');
+const { errors } = require('celebrate');
 const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
 const {login, createUser} = require("./controllers/users");
 
@@ -25,6 +26,7 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 app.disable('x-powered-by');
+app.use(errors()); // обработчик ошибок celebrate
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
