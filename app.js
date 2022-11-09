@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
-const auth = require('./middlewares/auth');
+
 const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
 const { login, createUser } = require('./controllers/users');
 
@@ -26,7 +26,7 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 app.disable('x-powered-by');
-app.use(errors()); // обработчик ошибок celebrate
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,11 +38,25 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.post('/signup', createUser);
 app.post('/signin', login);
 
-// авторизация
-app.use(auth);
-app.use('/users', userRouter);
+
+app.use(userRouter);
 app.use('/cards', cardRouter);
 app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
 
+// обработчик ошибок celebrate
+app.use(errors());
 
+// централизованный обработчик
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      // проверяем статус и выставляем сообщение в зависимости от него
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message
+    }).catch(next);
+});
 app.listen(PORT);

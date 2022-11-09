@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const NotFoundError = require('../errors/not-found-err');
 
 const {
   STATUS, ERROR_MESSAGE, ERROR_NAME, MESSAGE,
@@ -20,9 +21,7 @@ module.exports.getUserById = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.USER);
       }
     })
     .catch((e) => {
