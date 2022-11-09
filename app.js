@@ -10,6 +10,7 @@ const cardRouter = require('./routes/cards');
 
 const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
 const { login, createUser } = require('./controllers/users');
+const NotFoundError = require('./errors/not-found-err');
 
 const { PORT = 3000 } = process.env;
 
@@ -27,24 +28,21 @@ app.use(limiter);
 app.use(helmet());
 app.disable('x-powered-by');
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// обработчик ошибок celebrate
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
+app.use(errors());
 // роуты, не требующие авторизации, регистрация и логин
 app.post('/signup', createUser);
 app.post('/signin', login);
 
-
 app.use(userRouter);
 app.use('/cards', cardRouter);
 app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
-
-// обработчик ошибок celebrate
-app.use(errors());
 
 // централизованный обработчик
 app.use((err, req, res, next) => {
@@ -56,7 +54,7 @@ app.use((err, req, res, next) => {
       // проверяем статус и выставляем сообщение в зависимости от него
       message: statusCode === 500
         ? 'На сервере произошла ошибка'
-        : message
+        : message,
     }).catch(next);
 });
 app.listen(PORT);

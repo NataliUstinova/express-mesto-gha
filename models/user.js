@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const AuthError = require('../errors/auth-err');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -25,19 +26,18 @@ const userSchema = new mongoose.Schema({
       validator(v) {
         return /(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/.test(v);
       },
-      message: (props) => `${props.value} is not a valid link!`,
+      message: (props) => `${props.value} невалидная ссылка`,
     },
   },
   email: {
     type: String,
     unique: true,
-    required: [true, 'Please enter your Email'],
-    validate: [validator.isEmail, 'Invalid email'],
+    required: true,
+    validate: [validator.isEmail, 'Невалидный email'],
   },
   password: {
     type: String,
-    required: [true, 'Please enter Your Password'],
-    minlength: [6, 'Password must be at least 6 characters'],
+    required: true,
     select: false,
   },
 });
@@ -45,12 +45,12 @@ const userSchema = new mongoose.Schema({
 userSchema.statics.findUserByCredentials = (email, password) => this.findOne({ email }).select('+password')
   .then((user) => {
     if (!user) {
-      return Promise.reject(new UnauthorizedError('Email or password is incorrect'));
+      return Promise.reject(new AuthError('Email или пароль неверный'));
     }
     return bcrypt.compare(password, user.password)
       .then((matched) => {
         if (!matched) {
-          return Promise.reject(new UnauthorizedError('Email or password is incorrect'));
+          return Promise.reject(new AuthError('Email или пароль неверный'));
         }
         return user;
       });

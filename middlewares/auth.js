@@ -1,15 +1,15 @@
 const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require("../constants/constants");
-const AuthError = require("../errors/auth-err");
+const { JWT_SECRET } = require('../constants/constants');
+const AuthError = require('../errors/auth-err');
 
-//TODO
-//const { NODE_ENV, JWT_SECRET } = process.env;
+// TODO
+// const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new AuthError()
+    throw new AuthError();
   }
 
   const token = authorization.replace('Bearer ', '');

@@ -1,4 +1,4 @@
-const {ERROR_MESSAGE} = require("../constants/constants");
+const { ERROR_MESSAGE } = require('../constants/constants');
 
 class DefaultError extends Error {
   constructor(message) {

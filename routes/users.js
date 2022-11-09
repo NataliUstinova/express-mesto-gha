@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const auth = require('../middlewares/auth');
 const { celebrate, Joi } = require('celebrate');
+const auth = require('../middlewares/auth');
 Joi.objectId = require('joi-objectid')(Joi);
 
 const {
@@ -10,20 +10,20 @@ const {
 // роуты, не требующие авторизации, регистрация и логин
 router.post('/signup', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email({minDomainSegments: 2, tlds: {allow: false}}),
-    //Minimum 5 characters, at least one letter and one number:
+    email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: false } }),
+    // Minimum 5 characters, at least one letter and one number:
     password: Joi.string().required().pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,30}$/),
-  })
+  }),
 }), createUser);
 router.post('/signin', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: false} }),
-    //Minimum 5 characters, at least one letter and one number:
+    email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: false } }),
+    // Minimum 5 characters, at least one letter and one number:
     password: Joi.string().required().pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,30}$/),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().required().pattern(/(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/),
-  })
+  }),
 }), login);
 
 // роуты с авторизацией

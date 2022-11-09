@@ -4,18 +4,19 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 
 const {
-  STATUS, ERROR_MESSAGE, ERROR_NAME, MESSAGE,
+  ERROR_MESSAGE, ERROR_NAME, MESSAGE,
 } = require('../constants/constants');
+const BadRequestError = require('../errors/bad-request-err');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-module.exports.getAllUsers = (req, res) => {
+module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
@@ -26,16 +27,14 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.CAST) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
+        next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_GET));
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        next(e);
       }
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -46,16 +45,14 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
+        next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_CREATE));
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        next(e);
       }
     });
 };
 
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -69,23 +66,19 @@ module.exports.updateUserInfo = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.USER);
       }
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
+        next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE));
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        next(e);
       }
     });
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -96,18 +89,14 @@ module.exports.updateAvatar = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.USER);
       }
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
+        next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.AVATAR));
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        next(e);
       }
     });
 };
