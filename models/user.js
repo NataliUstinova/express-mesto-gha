@@ -8,14 +8,14 @@ const userSchema = new mongoose.Schema({
     required: false,
     minLength: 2,
     maxLength: 30,
-    default: 'Жак-Ив Кусто'
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     required: false,
     minLength: 2,
     maxLength: 30,
-    default: 'Исследователь'
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
@@ -39,23 +39,21 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please enter Your Password'],
     minlength: [6, 'Password must be at least 6 characters'],
     select: false,
-  }
+  },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select('+password')
-    .then((user) => {
-      if (!user) {
-        return Promise.reject(new UnauthorizedError('Email or password is incorrect'));
-      }
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new UnauthorizedError('Email or password is incorrect'));
-          }
-          return user;
-        });
-    });
-};
+userSchema.statics.findUserByCredentials = (email, password) => this.findOne({ email }).select('+password')
+  .then((user) => {
+    if (!user) {
+      return Promise.reject(new UnauthorizedError('Email or password is incorrect'));
+    }
+    return bcrypt.compare(password, user.password)
+      .then((matched) => {
+        if (!matched) {
+          return Promise.reject(new UnauthorizedError('Email or password is incorrect'));
+        }
+        return user;
+      });
+  });
 
 module.exports = mongoose.model('user', userSchema);

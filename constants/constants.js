@@ -11,7 +11,7 @@ const ERROR_NAME = {
 
 const MESSAGE = {
   AUTH_SUCCESS: 'Авторизация прошла успешно',
-}
+};
 
 const ERROR_MESSAGE = {
   NOT_FOUND: {
@@ -31,4 +31,6 @@ const ERROR_MESSAGE = {
   DEFAULT_ERROR: 'На сервере произошла ошибка.',
 };
 
-module.exports = { STATUS, ERROR_MESSAGE, ERROR_NAME, MESSAGE };
+module.exports = {
+  STATUS, ERROR_MESSAGE, ERROR_NAME, MESSAGE,
+};

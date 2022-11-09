@@ -1,15 +1,15 @@
 const express = require('express');
-require('dotenv').config()
+require('dotenv').config();
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const auth = require('./middlewares/auth');
-const { errors } = require('celebrate');
 const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
-const {login, createUser} = require("./controllers/users");
+const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 
@@ -43,6 +43,5 @@ app.post('/signin', login);
 app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
-
 
 app.listen(PORT);

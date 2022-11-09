@@ -1,7 +1,10 @@
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
-const { STATUS, ERROR_MESSAGE, ERROR_NAME, MESSAGE } = require('../constants/constants');
+const {
+  STATUS, ERROR_MESSAGE, ERROR_NAME, MESSAGE,
+} = require('../constants/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -34,9 +37,13 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
   bcrypt.hash(password, 10)
-    .then(hash => User.create({ name, about, avatar, email, password: hash }))
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
@@ -115,4 +122,4 @@ module.exports.login = (req, res, next) => {
       res.cookie('authorization', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ message: MESSAGE.AUTH_SUCCESS });
     })
     .catch(next);
-}
+};
