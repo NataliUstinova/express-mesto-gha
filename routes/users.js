@@ -11,8 +11,10 @@ const {
 router.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: false } }),
-    // Minimum 5 characters, at least one letter and one number:
-    password: Joi.string().required().pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,30}$/),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(/(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/),
   }),
 }), createUser);
 router.post('/signin', celebrate({
@@ -20,9 +22,6 @@ router.post('/signin', celebrate({
     email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: false } }),
     // Minimum 5 characters, at least one letter and one number:
     password: Joi.string().required().pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,30}$/),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().required().pattern(/(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/),
   }),
 }), login);
 
