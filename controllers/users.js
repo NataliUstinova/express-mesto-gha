@@ -7,6 +7,7 @@ const {
   ERROR_MESSAGE, ERROR_NAME, MESSAGE,
 } = require('../constants/constants');
 const BadRequestError = require('../errors/bad-request-err');
+const EmailExistError = require("../errors/email-exist-err");
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -42,10 +43,12 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send(user))
+    .then((user) => res.send({name: user.name, about: user.about, avatar: user.avatar, email: user.email}))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
         next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_CREATE));
+      } else if (e.code === 11000) {
+        next(new EmailExistError('Email exist'))
       } else {
         next(e);
       }
