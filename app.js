@@ -44,7 +44,7 @@ app.use(errors());
 // централизованный обработчик
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-
+  console.log(err);
   res
     .status(statusCode)
     .send({

@@ -8,6 +8,7 @@ const {
 } = require('../constants/constants');
 const BadRequestError = require('../errors/bad-request-err');
 const EmailExistError = require("../errors/email-exist-err");
+const AuthError = require("../errors/auth-err");
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -112,5 +113,7 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.cookie('authorization', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ message: MESSAGE.AUTH_SUCCESS });
     })
-    .catch(next);
+    .catch(e => {
+      next(e);
+    });
 };

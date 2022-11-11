@@ -23,7 +23,7 @@ router.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: false } }),
     // Minimum 5 characters, at least one letter and one number:
-    password: Joi.string().required().pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,30}$/),
+    password: Joi.string().required(),
   }),
 }), login);
 
