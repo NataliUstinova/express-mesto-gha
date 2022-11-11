@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const auth = require('../middlewares/auth');
 Joi.objectId = require('joi-objectid')(Joi);
+const urlValidator =  require('../utils/utils')
 
 const {
   getUserById, getAllUsers, updateUserInfo, updateAvatar, createUser, login,
@@ -14,7 +15,8 @@ router.post('/signup', celebrate({
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(/(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/),
+    // avatar: Joi.string().regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/),
+    avatar: Joi.string().custom(urlValidator),
   }),
 }), createUser);
 router.post('/signin', celebrate({
