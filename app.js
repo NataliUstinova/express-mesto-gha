@@ -5,8 +5,10 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const auth = require('./middlewares/auth');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const loginRouter = require('./routes/login');
 
 const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
 const { login, createUser } = require('./controllers/users');
@@ -34,7 +36,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
-
+app.use(loginRouter);
+app.use(auth)
 app.use(userRouter);
 app.use('/cards', cardRouter);
 app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
@@ -44,7 +47,7 @@ app.use(errors());
 // централизованный обработчик
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-  console.log(err);
+  console.log(err)
   res
     .status(statusCode)
     .send({
