@@ -1,5 +1,5 @@
-const validator = require("validator");
-const BadRequestError = require('../errors/bad-request-err')
+const validator = require('validator');
+const BadRequestError = require('../errors/bad-request-err');
 
 const urlCheckMethod = (value) => {
   const result = validator.isURL(value);
@@ -7,7 +7,7 @@ const urlCheckMethod = (value) => {
     return value;
   }
   // Если условие некорректно, то бросаем ошибку 400
-  throw new BadRequestError("Введённый URL некорректный");
+  throw new BadRequestError('Введённый URL некорректный');
 };
 
 module.exports = urlCheckMethod;

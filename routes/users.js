@@ -7,8 +7,6 @@ const {
   getUserById, getAllUsers, getUserInfo, updateUserInfo, updateAvatar, createUser, login,
 } = require('../controllers/users');
 
-
-
 // роуты с авторизацией
 router.get('/users', getAllUsers);
 

@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { createUser, login } = require('../controllers/users');
-const urlValidator =  require('../utils/utils');
+const urlValidator = require('../utils/utils');
 
 // роуты, не требующие авторизации, регистрация и логин
 router.post('/signup', celebrate({

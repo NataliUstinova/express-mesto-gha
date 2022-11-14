@@ -4,11 +4,10 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 
 const {
-  ERROR_MESSAGE, ERROR_NAME, MESSAGE,
+  ERROR_MESSAGE, ERROR_NAME,
 } = require('../constants/constants');
 const BadRequestError = require('../errors/bad-request-err');
-const EmailExistError = require("../errors/email-exist-err");
-const AuthError = require("../errors/auth-err");
+const EmailExistError = require('../errors/email-exist-err');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -37,25 +36,27 @@ module.exports.getUserById = (req, res, next) => {
 };
 
 module.exports.getUserInfo = (req, res, next) => {
-  console.log(req.user)
+  console.log(req.user);
   const { _id } = req.user;
   User.find({ _id })
     .then((user) => res.send({ data: user[0] }))
     .catch(next);
-}
+};
 
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
   if (User.findOne(email)) {
-    next(new EmailExistError('Email exist'))
+    next(new EmailExistError('Email exist'));
   } else {
     bcrypt.hash(password, 10)
       .then((hash) => User.create({
         name, about, avatar, email, password: hash,
       }))
-      .then((user) => res.send({name: user.name, about: user.about, avatar: user.avatar, email: user.email}))
+      .then((user) => res.send({
+        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+      }))
       .catch((e) => {
         // if (e.code === 11000) {
         //   next(new EmailExistError('Email exist'))}
@@ -74,7 +75,7 @@ module.exports.getUserInfo = (req, res, next) => {
   User.find({ _id })
     .then((user) => res.send({ data: user[0] }))
     .catch(next);
-}
+};
 
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
@@ -130,13 +131,11 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user)
+      console.log(user);
       const token = jwt.sign({ _id: user._id }, 'strongest-key-ever', { expiresIn: '7d' });
-      res.send({user, token});
+      res.send({ user, token });
     })
-    .catch(e => {
+    .catch((e) => {
       next(e);
     });
 };
-
-

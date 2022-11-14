@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(loginRouter);
-app.use(auth)
+app.use(auth);
 app.use(userRouter);
 app.use('/cards', cardRouter);
 app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
@@ -45,7 +45,7 @@ app.use(errors());
 // централизованный обработчик
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-  console.log(err)
+  console.log(err);
   res
     .status(statusCode)
     .send({
