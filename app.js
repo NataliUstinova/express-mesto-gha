@@ -11,8 +11,6 @@ const cardRouter = require('./routes/cards');
 const loginRouter = require('./routes/login');
 
 const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
-const { login, createUser } = require('./controllers/users');
-const NotFoundError = require('./errors/not-found-err');
 
 const { PORT = 3000 } = process.env;
 

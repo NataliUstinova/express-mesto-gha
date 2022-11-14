@@ -68,6 +68,14 @@ module.exports.createUser = (req, res, next) => {
   }
 };
 
+module.exports.getUserInfo = (req, res, next) => {
+  const { _id } = req.user._id;
+
+  User.find({ _id })
+    .then((user) => res.send({ data: user[0] }))
+    .catch(next);
+}
+
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(

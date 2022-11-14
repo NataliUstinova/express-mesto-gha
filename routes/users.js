@@ -21,11 +21,13 @@ router.patch('users/me', celebrate({
 
 router.get('/users/me', getUserInfo);
 
+router.get('/users/me', auth, getUserInfo);
+
 router.get('users/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.objectId,
   }),
-}), getUserById);
+}), auth, getUserById);
 
 router.patch('users/me/avatar', celebrate({
   body: Joi.object().keys({
