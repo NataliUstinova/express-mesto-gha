@@ -9,8 +9,6 @@ const {
 const BadRequestError = require('../errors/bad-request-err');
 const EmailExistError = require('../errors/email-exist-err');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
-
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
@@ -47,9 +45,6 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (User.findOne(email)) {
-    next(new EmailExistError('Email exist'));
-  } else {
     bcrypt.hash(password, 10)
       .then((hash) => User.create({
         name, about, avatar, email, password: hash,
@@ -58,15 +53,14 @@ module.exports.createUser = (req, res, next) => {
         name: user.name, about: user.about, avatar: user.avatar, email: user.email,
       }))
       .catch((e) => {
-        // if (e.code === 11000) {
-        //   next(new EmailExistError('Email exist'))}
+        if (e.code === 11000) {
+          next(new EmailExistError('Email exist'))}
         if (e.name === ERROR_NAME.VALIDATION) {
           next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_CREATE));
         } else {
           next(e);
         }
       });
-  }
 };
 
 module.exports.getUserInfo = (req, res, next) => {
