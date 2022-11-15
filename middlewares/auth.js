@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
-// // const { JWT_SECRET } = require('../constants/constants');
 const AuthError = require('../errors/auth-err');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
-  const { JWT_SECRET = 'strongest-key-ever' } = process.env;
+  const JWT_SECRET = 'strongest-key-ever';
   const { authorization } = req.headers;
   // Проверяем есть ли заголовок и начинается ли он с Bearer
   if (!authorization || !authorization.startsWith('Bearer ')) {
