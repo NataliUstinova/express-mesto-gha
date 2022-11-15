@@ -4,20 +4,20 @@ const auth = require('../middlewares/auth');
 Joi.objectId = require('joi-objectid')(Joi);
 
 const {
-  getUserById, getAllUsers, getUserInfo, updateUserInfo, updateAvatar, createUser, login,
+  getUserById, getAllUsers, getUserInfo, updateUserInfo, updateAvatar
 } = require('../controllers/users');
 
 // роуты с авторизацией
-router.get('/users', getAllUsers);
+router.get('/users', auth, getAllUsers);
 
 router.patch('users/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
-}), updateUserInfo);
+}), auth, updateUserInfo);
 
-router.get('/users/me', getUserInfo);
+router.get('/users/me', auth, getUserInfo);
 
 router.get('/users/me', auth, getUserInfo);
 
@@ -31,6 +31,6 @@ router.patch('users/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().pattern(/(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/),
   }),
-}), updateAvatar);
+}), auth, updateAvatar);
 
 module.exports = router;

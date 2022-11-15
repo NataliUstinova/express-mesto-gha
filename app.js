@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const auth = require('./middlewares/auth');
+const { errorHandler } = require('./middlewares/errorHandler');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const loginRouter = require('./routes/login');
@@ -35,7 +35,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(loginRouter);
-app.use(auth);
 app.use(userRouter);
 app.use('/cards', cardRouter);
 app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
@@ -43,17 +42,5 @@ app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_
 // обработчик ошибок celebrate
 app.use(errors());
 // централизованный обработчик
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  console.log(err);
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(errorHandler);
 app.listen(PORT);
