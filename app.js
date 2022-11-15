@@ -10,7 +10,7 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const loginRouter = require('./routes/login');
 
-const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
+const { ERROR_MESSAGE } = require('./constants/constants');
 
 const { PORT = 3000 } = process.env;
 
@@ -37,7 +37,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(loginRouter);
 app.use(userRouter);
 app.use('/cards', cardRouter);
-app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
+app.use('*', (req, res) => { res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
 
 // обработчик ошибок celebrate
 app.use(errors());

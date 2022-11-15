@@ -2,12 +2,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
-
+const BadRequestError = require('../errors/bad-request-err');
+const EmailExistError = require('../errors/email-exist-err');
 const {
   ERROR_MESSAGE, ERROR_NAME,
 } = require('../constants/constants');
-const BadRequestError = require('../errors/bad-request-err');
-const EmailExistError = require('../errors/email-exist-err');
+
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
@@ -16,7 +16,7 @@ module.exports.getAllUsers = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.send(user);
@@ -33,13 +33,7 @@ module.exports.getUserById = (req, res, next) => {
     });
 };
 
-module.exports.getUserInfo = (req, res, next) => {
-  console.log(req.user);
-  const { _id } = req.user;
-  User.find({ _id })
-    .then((user) => res.send({ data: user[0] }))
-    .catch(next);
-};
+
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -63,14 +57,6 @@ module.exports.createUser = (req, res, next) => {
       });
 };
 
-module.exports.getUserInfo = (req, res, next) => {
-  const { _id } = req.user._id;
-
-  User.find({ _id })
-    .then((user) => res.send({ data: user[0] }))
-    .catch(next);
-};
-
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
@@ -78,7 +64,6 @@ module.exports.updateUserInfo = (req, res, next) => {
     { name, about },
     {
       new: true,
-      runValidators: true,
     },
   )
     .then((user) => {
@@ -95,6 +80,16 @@ module.exports.updateUserInfo = (req, res, next) => {
         next(e);
       }
     });
+};
+
+module.exports.getUserInfo = (req, res, next) => {
+  console.log('req.body', req.body)
+  console.log('req.params', req.params)
+  const { _id } = req.body.user;
+
+  User.findById(_id)
+    .then((user) => res.send({ data: user[0] }))
+    .catch(next);
 };
 
 module.exports.updateAvatar = (req, res, next) => {
@@ -126,9 +121,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'strongest-key-ever', { expiresIn: '7d' });
-      res.send({ user, token });
+      res.send({ token });
     })
-    .catch((e) => {
-      next(e);
-    });
+    .catch(next);
 };

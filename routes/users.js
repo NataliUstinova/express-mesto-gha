@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const auth = require('../middlewares/auth');
+const { auth } = require('../middlewares/auth');
 Joi.objectId = require('joi-objectid')(Joi);
 
 const {
@@ -10,16 +10,14 @@ const {
 // роуты с авторизацией
 router.get('/users', auth, getAllUsers);
 
+router.get('/users/me', auth, getUserInfo);
+
 router.patch('users/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
 }), auth, updateUserInfo);
-
-router.get('/users/me', auth, getUserInfo);
-
-router.get('/users/me', auth, getUserInfo);
 
 router.get('users/:userId', celebrate({
   params: Joi.object().keys({

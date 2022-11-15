@@ -2,7 +2,7 @@ const router = require('express').Router();
 const {
   getAllCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
-const auth = require('../middlewares/auth');
+const { auth } = require('../middlewares/auth');
 const { celebrate, Joi } = require("celebrate");
 Joi.objectId = require('joi-objectid')(Joi);
 

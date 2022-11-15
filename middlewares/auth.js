@@ -2,12 +2,12 @@ const jwt = require('jsonwebtoken');
 const AuthError = require('../errors/auth-err');
 
 // eslint-disable-next-line consistent-return
-module.exports = (req, res, next) => {
+module.exports.auth = (req, res, next) => {
   const JWT_SECRET = 'strongest-key-ever';
   const { authorization } = req.headers;
   // Проверяем есть ли заголовок и начинается ли он с Bearer
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return next(new AuthError('Необходима авторизация'));
+    throw new AuthError('Необходима авторизация');
   }
   // Отделяем токен от Bearer
   const token = authorization.replace('Bearer ', '');
