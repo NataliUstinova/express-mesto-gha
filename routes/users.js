@@ -6,6 +6,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 const {
   getUserById, getAllUsers, getUserInfo, updateUserInfo, updateAvatar
 } = require('../controllers/users');
+const {urlValidatorPattern} = require("../constants/constants");
 
 // роуты с авторизацией
 router.get('/users', auth, getAllUsers);
@@ -27,7 +28,7 @@ router.get('users/:userId', celebrate({
 
 router.patch('users/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().pattern(/(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/),
+    avatar: Joi.string().required().pattern(urlValidatorPattern),
   }),
 }), auth, updateAvatar);
 

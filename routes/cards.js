@@ -4,6 +4,7 @@ const {
 } = require('../controllers/cards');
 const { auth } = require('../middlewares/auth');
 const { celebrate, Joi } = require("celebrate");
+const {urlValidatorPattern} = require("../constants/constants");
 Joi.objectId = require('joi-objectid')(Joi);
 
 router.get('/', auth, getAllCards);
@@ -11,7 +12,7 @@ router.get('/', auth, getAllCards);
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    link: Joi.string().required().pattern(/(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-\/]))?/),
+    link: Joi.string().required().pattern(urlValidatorPattern),
   })
 }), auth, createCard);
 
