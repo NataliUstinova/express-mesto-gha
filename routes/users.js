@@ -8,24 +8,24 @@ const {
 const { urlValidatorPattern } = require('../constants/constants');
 
 // роуты с авторизацией
-router.get('/users', auth, getAllUsers);
+router.get('/', auth, getAllUsers);
 
-router.get('/users/me', auth, getUserInfo);
+router.get('/me', auth, getUserInfo);
 
-router.patch('/users/me', celebrate({
+router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
 }), auth, updateUserInfo);
 
-router.get('/users/:userId', celebrate({
+router.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().required().pattern(/^[a-fA-F0-9]{24}$/),
   }),
 }), auth, getUserById);
 
-router.patch('/users/me/avatar', celebrate({
+router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().pattern(urlValidatorPattern),
   }),
