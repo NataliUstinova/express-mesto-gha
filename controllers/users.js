@@ -21,7 +21,7 @@ module.exports.getUserById = (req, res, next) => {
       if (!user) {
         throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.USER);
       }
-        res.send({ data: user });
+      res.send({ data: user });
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.CAST) {
