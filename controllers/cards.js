@@ -29,12 +29,19 @@ module.exports.deleteCard = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.CARD);
     }).then((card) => {
-      if (card.owner.toString() === req.user._id) {
-        Card.findByIdAndDelete(cardId).then((cards) => res.send(cards));
-      } else {
+      if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Нельзя удалять чужие карточки');
+      } else {
+        return Card.findByIdAndDelete(cardId);
       }
-    }).catch(next);
+    }).then((card) => res.send(card))
+    .catch((e) => {
+      if (e.name === ERROR_NAME.CAST) {
+        next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.CARD_DELETE));
+      } else {
+        next(e);
+      }
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {
