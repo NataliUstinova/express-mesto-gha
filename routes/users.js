@@ -13,20 +13,20 @@ router.get('/users', auth, getAllUsers);
 
 router.get('/users/me', auth, getUserInfo);
 
-router.patch('users/me', celebrate({
+router.patch('/users/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
 }), auth, updateUserInfo);
 
-router.get('users/:userId', celebrate({
+router.get('/users/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.objectId,
   }),
 }), auth, getUserById);
 
-router.patch('users/me/avatar', celebrate({
+router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().pattern(urlValidatorPattern),
   }),
