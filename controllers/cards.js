@@ -2,7 +2,7 @@ const Card = require('../models/card');
 const { ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 const BadRequestError = require('../errors/bad-request-err');
 const NotFoundError = require('../errors/not-found-err');
-const ForbiddenError = require("../errors/forbidden-err");
+const ForbiddenError = require('../errors/forbidden-err');
 
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
@@ -15,26 +15,26 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
     .catch((e) => {
-    if (e.name === ERROR_NAME.VALIDATION) {
-      next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.CARD));
-    } else {
-      next(e);
-    }
-  });
+      if (e.name === ERROR_NAME.VALIDATION) {
+        next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.CARD));
+      } else {
+        next(e);
+      }
+    });
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  const cardId = req.params.cardId;
+  const { cardId } = req.params;
   Card.findById(cardId)
     .orFail(() => {
       throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.CARD);
-    }).then(card => {
-    if (card.owner.toString() === req.user._id) {
-      Card.findByIdAndDelete(cardId).then(card => res.send(card))
-    } else {
-      throw new ForbiddenError('Нельзя удалять чужие карточки');
-    }
-  }).catch(next);
+    }).then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        Card.findByIdAndDelete(cardId).then((cards) => res.send(cards));
+      } else {
+        throw new ForbiddenError('Нельзя удалять чужие карточки');
+      }
+    }).catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -59,7 +59,7 @@ module.exports.likeCard = (req, res, next) => {
         next(e);
       }
     });
-}
+};
 
 module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
@@ -82,4 +82,4 @@ module.exports.dislikeCard = (req, res, next) => {
         next(e);
       }
     });
-}
+};

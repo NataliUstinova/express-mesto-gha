@@ -8,7 +8,6 @@ const {
   ERROR_MESSAGE, ERROR_NAME,
 } = require('../constants/constants');
 
-
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
@@ -38,22 +37,23 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-    bcrypt.hash(password, 10)
-      .then((hash) => User.create({
-        name, about, avatar, email, password: hash,
-      }))
-      .then((user) => res.send({
-        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
-      }))
-      .catch((e) => {
-        if (e.code === 11000) {
-          next(new EmailExistError('Email exist'))}
-        if (e.name === ERROR_NAME.VALIDATION) {
-          next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_CREATE));
-        } else {
-          next(e);
-        }
-      });
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => res.send({
+      name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+    }))
+    .catch((e) => {
+      if (e.code === 11000) {
+        next(new EmailExistError('Email exist'));
+      }
+      if (e.name === ERROR_NAME.VALIDATION) {
+        next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_CREATE));
+      } else {
+        next(e);
+      }
+    });
 };
 
 module.exports.updateUserInfo = (req, res, next) => {

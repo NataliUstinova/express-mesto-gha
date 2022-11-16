@@ -3,9 +3,9 @@ const { celebrate, Joi } = require('celebrate');
 const { auth } = require('../middlewares/auth');
 
 const {
-  getUserById, getAllUsers, getUserInfo, updateUserInfo, updateAvatar
+  getUserById, getAllUsers, getUserInfo, updateUserInfo, updateAvatar,
 } = require('../controllers/users');
-const {urlValidatorPattern} = require("../constants/constants");
+const { urlValidatorPattern } = require('../constants/constants');
 
 // роуты с авторизацией
 router.get('/users', auth, getAllUsers);
