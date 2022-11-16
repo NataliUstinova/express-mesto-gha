@@ -16,13 +16,13 @@ module.exports.getAllUsers = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  const { id } = req.params;
-  User.findById(id)
+  const { userId } = req.params;
+  User.findById(userId)
     .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
+      if (!user) {
         throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.USER);
+      } else {
+        res.send({ data: user });
       }
     })
     .catch((e) => {
@@ -33,8 +33,6 @@ module.exports.getUserById = (req, res, next) => {
       }
     });
 };
-
-
 
 module.exports.createUser = (req, res, next) => {
   const {
