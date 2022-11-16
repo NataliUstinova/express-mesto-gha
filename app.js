@@ -6,12 +6,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { errorHandler } = require('./middlewares/errorHandler');
-const userRouter = require('./routes/users');
-const cardRouter = require('./routes/cards');
-const loginRouter = require('./routes/login');
-
-const { ERROR_MESSAGE } = require('./constants/constants');
-const NotFoundError = require('./errors/not-found-err');
+const routes = require('./routes');
 
 const { PORT = 3000 } = process.env;
 
@@ -35,10 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
-app.use(loginRouter);
-app.use(userRouter);
-app.use('/cards', cardRouter);
-app.use('*', (req, res, next) => { next(new NotFoundError(ERROR_MESSAGE.NOT_FOUND.PAGE)); });
+app.use(routes);
 
 // обработчик ошибок celebrate
 app.use(errors());

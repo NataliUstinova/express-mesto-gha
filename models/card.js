@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { urlValidatorPattern } = require('../constants/constants');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -10,6 +11,12 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator(v) {
+        return urlValidatorPattern.test(v);
+      },
+      message: (props) => `${props.value} невалидная ссылка`,
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
