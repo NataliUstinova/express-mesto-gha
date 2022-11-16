@@ -21,7 +21,7 @@ router.patch('/me', celebrate({
 
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required().pattern(/^[a-fA-F0-9]{24}$/),
+    userId: Joi.string().required().hex().length(24),
   }),
 }), auth, getUserById);
 
