@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { auth } = require('../middlewares/auth');
-Joi.objectId = require('joi-objectid')(Joi);
 
 const {
   getUserById, getAllUsers, getUserInfo, updateUserInfo, updateAvatar
@@ -22,7 +21,7 @@ router.patch('/users/me', celebrate({
 
 router.get('/users/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.objectId,
+    userId: Joi.string().required().pattern(/^[a-fA-F0-9]{24}$/),
   }),
 }), auth, getUserById);
 

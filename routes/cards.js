@@ -5,7 +5,6 @@ const {
 const { auth } = require('../middlewares/auth');
 const { celebrate, Joi } = require("celebrate");
 const {urlValidatorPattern} = require("../constants/constants");
-Joi.objectId = require('joi-objectid')(Joi);
 
 router.get('/', auth, getAllCards);
 
@@ -18,19 +17,19 @@ router.post('/', celebrate({
 
 router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.objectId,
+    cardId: Joi.string().required().pattern(/^[a-fA-F0-9]{24}$/),
   })
 }), auth, deleteCard);
 
 router.put('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.objectId,
+    cardId: Joi.string().required().pattern(/^[a-fA-F0-9]{24}$/),
   })
 }), auth, likeCard);
 
 router.delete('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.objectId,
+    cardId: Joi.string().required().pattern(/^[a-fA-F0-9]{24}$/),
   })
 }), auth, dislikeCard);
 
