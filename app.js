@@ -1,11 +1,17 @@
 const express = require('express');
+require('dotenv').config();
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
+const { errorHandler } = require('./middlewares/errorHandler');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
-const { STATUS, ERROR_MESSAGE } = require('./constants/constants');
+const loginRouter = require('./routes/login');
+
+const { ERROR_MESSAGE } = require('./constants/constants');
+const NotFoundError = require('./errors/not-found-err');
 
 const { PORT = 3000 } = process.env;
 
@@ -28,18 +34,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
-// временная авторизация
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6364012305b1c3eaf904ca3f',
-  };
 
-  next();
-});
-
-app.use('/users', userRouter);
+app.use(loginRouter);
+app.use(userRouter);
 app.use('/cards', cardRouter);
+app.use('*', (req, res, next) => { next(new NotFoundError(ERROR_MESSAGE.NOT_FOUND.PAGE)); });
 
-app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
-
+// обработчик ошибок celebrate
+app.use(errors());
+// централизованный обработчик
+app.use(errorHandler);
 app.listen(PORT);

@@ -1,12 +1,10 @@
-const STATUS = {
-  DEFAULT_ERROR: 500,
-  BAD_REQUEST: 400,
-  NOT_FOUND: 404,
-};
-
 const ERROR_NAME = {
   CAST: 'CastError',
   VALIDATION: 'ValidationError',
+};
+
+const MESSAGE = {
+  AUTH_SUCCESS: 'Авторизация прошла успешно',
 };
 
 const ERROR_MESSAGE = {
@@ -24,7 +22,12 @@ const ERROR_MESSAGE = {
     USER_UPDATE: 'Переданы некорректные данные при обновлении профиля.',
     AVATAR: 'Переданы некорректные данные при обновлении аватара.',
   },
+  AUTH_ERROR: 'Необходима авторизация',
   DEFAULT_ERROR: 'На сервере произошла ошибка.',
 };
 
-module.exports = { STATUS, ERROR_MESSAGE, ERROR_NAME };
+const urlValidatorPattern = /^((http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/;
+
+module.exports = {
+  ERROR_MESSAGE, ERROR_NAME, MESSAGE, urlValidatorPattern,
+};
