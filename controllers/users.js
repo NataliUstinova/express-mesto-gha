@@ -20,9 +20,8 @@ module.exports.getUserById = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND.USER);
-      } else {
-        res.send({ data: user });
       }
+        res.send({ data: user });
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.CAST) {
@@ -47,8 +46,7 @@ module.exports.createUser = (req, res, next) => {
     .catch((e) => {
       if (e.code === 11000) {
         next(new EmailExistError('Email exist'));
-      }
-      if (e.name === ERROR_NAME.VALIDATION) {
+      } else if (e.name === ERROR_NAME.VALIDATION) {
         next(new BadRequestError(ERROR_MESSAGE.BAD_REQUEST.USER_CREATE));
       } else {
         next(e);
@@ -63,6 +61,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     { name, about },
     {
       new: true,
+      runValidators: true,
     },
   )
     .then((user) => {
@@ -94,7 +93,10 @@ module.exports.updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
     .then((user) => {
       if (user) {
