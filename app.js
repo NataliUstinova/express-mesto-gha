@@ -1,5 +1,6 @@
 const express = require('express');
 require('dotenv').config();
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
@@ -30,8 +31,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
+app.use(requestLogger);
 app.use(routes);
 
+app.use(errorLogger); // подключаем логгер ошибок
 // обработчик ошибок celebrate
 app.use(errors());
 // централизованный обработчик
