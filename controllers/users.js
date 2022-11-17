@@ -7,6 +7,7 @@ const EmailExistError = require('../errors/email-exist-err');
 const {
   ERROR_MESSAGE, ERROR_NAME,
 } = require('../constants/constants');
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getAllUsers = (req, res, next) => {
