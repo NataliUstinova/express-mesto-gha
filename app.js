@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { errorHandler } = require('./middlewares/errorHandler');
 const routes = require('./routes');
 
@@ -30,8 +31,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
+app.use(requestLogger);
 app.use(routes);
 
+app.use(errorLogger); // подключаем логгер ошибок
 // обработчик ошибок celebrate
 app.use(errors());
 // централизованный обработчик
