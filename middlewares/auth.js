@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const AuthError = require('../errors/auth-err');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 // eslint-disable-next-line consistent-return
 module.exports.auth = (req, res, next) => {
-  const JWT_SECRET = 'strongest-key-ever';
   const { authorization } = req.headers;
   // Проверяем есть ли заголовок и начинается ли он с Bearer
   if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -16,7 +17,7 @@ module.exports.auth = (req, res, next) => {
   // Чтобы отловить ошибки оборачиваем в try-catch
   try {
     // Вытаскиваем айди из токена
-    payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'strongest-key-ever');
   } catch (err) {
     next(new AuthError('Необходима авторизация'));
   }
