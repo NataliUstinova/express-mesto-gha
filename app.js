@@ -41,4 +41,4 @@ app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
 // централизованный обработчик
 app.use(errorHandler);
-app.listen(PORT, () => console.log('new'));
+app.listen(PORT);
