@@ -7,7 +7,7 @@ const allowedCors = [
   'http://api.mesto.nata.u.nomoredomains.icu',
 ];
 
-module.exports.CORS = (req, res, next) => {
+module.exports.cors = (req, res, next) => {
   console.log('Cors is used');
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
   // сохраняем список заголовков исходного запроса
