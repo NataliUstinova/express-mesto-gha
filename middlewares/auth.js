@@ -14,6 +14,7 @@ module.exports.auth = (req, res, next) => {
   // Чтобы отловить ошибки оборачиваем в try-catch
   try {
     cookieParser()
+    console.log(req)
     console.log(req.cookie)
     console.log(req.cookies)
     // Cookies that have not been signed
