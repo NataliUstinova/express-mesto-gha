@@ -8,6 +8,7 @@ const allowedCors = [
 ];
 
 const CORS = (req, res, next) => {
+  console.log('Cors is used');
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
   // сохраняем список заголовков исходного запроса
   const requestHeaders = req.headers['access-control-request-headers'];
